@@ -1,10 +1,10 @@
-		#La imagen a usar
+		#Image to use
 		FROM alpine:latest
 		
-		#Quien es el responsable
+		#Who is responsible
 		MAINTAINER manuel
 		
-		#Ejecutar comandos dentro del contenedor
+		#Commands to be executed inside the container
 		RUN apk update
 		RUN apk upgrade
 		RUN apk add openssh bash nano sudo
@@ -17,18 +17,18 @@
 		RUN mkdir /var/run/sshd
 		RUN sed -i 's/^#PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
 		
-		#Declarando la variable KEYGEN para reutilizarla luego
+		#Declare the KEYGEN variable to use it later
 		ENV KEYGEN="ssh-keygen -b 2048 -t rsa -f"
 		
-		#Usando la variable
+		#Using the variable create before
 		RUN $KEYGEN /etc/ssh/ssh_host_rsa_key -q -N ""
 		RUN $KEYGEN /etc/ssh/ssh_host_dsa_key -q -N ""
 		RUN $KEYGEN /etc/ssh/ssh_host_ecdsa_key -q -N ""
 		RUN $KEYGEN /etc/ssh/ssh_host_ed25519_key -q -N ""
 		
-		#Diciendo a docker que se necesita exponer el puerto 22
+		#Exposing a port to the container
 		EXPOSE 22
 		
-		#Esta es la ultima linea en la declaracion de un fichero de Docker
-		#No puede haber dos lineas CMD en el mismo fichero.
+		#This is the last line in a Dockerfile. 
+		#NOTE: You can't have two CMD lines within the same file.
 		CMD ["/usr/sbin/sshd","-D"]
